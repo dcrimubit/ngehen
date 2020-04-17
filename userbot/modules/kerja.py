@@ -64,7 +64,7 @@ async def typewriter(typew):
 	sleep(2)
 	await typew.edit("`Payment Via BCA YA`")
 	sleep(1)
-	await typew.edit("`BCA :`0901316839 `A/N PILU EFENDI` \nSertakan Bukti Transfer Ya (Wajib) Untuk melanjutkan transaksi \nBot By : [#JefanyaBot](t.me/JejakCheat)")
+	await typew.edit("`BCA : `0901316839 `A/N PILU EFENDI` \nSertakan Bukti Transfer Ya (Wajib) Untuk melanjutkan transaksi \nBot By : [#JefanyaBot](t.me/JejakCheat)")
 
 
 # Create by myself @JejakCheat
@@ -76,7 +76,7 @@ async def typewriter(typew):
 	sleep(2)
 	await typew.edit("`Payment Via TELKOMSEL YA`")
 	sleep(1)
-	await typew.edit("`TELKOMSEL :`082247870713 `A/N -` \nSertakan Bukti Transfer Ya (Wajib) Untuk melanjutkan transaksi \nBot By : [#JefanyaBot](t.me/JejakCheat)")
+	await typew.edit("`TELKOMSEL : `082247870713 `A/N -` \nSertakan Bukti Transfer Ya (Wajib) Untuk melanjutkan transaksi \nBot By : [#JefanyaBot](t.me/JejakCheat)")
 
 
 # Create by myself @JejakCheat
@@ -88,7 +88,7 @@ async def typewriter(typew):
 	sleep(2)
 	await typew.edit("`Payment Via BNI YA`")
 	sleep(1)
-	await typew.edit("`BNI :`0830301026 `A/N Jefanya Efandchris` \nSertakan Bukti Transfer Ya (Wajib) Untuk melanjutkan transaksi \nBot By : [#JefanyaBot](t.me/JejakCheat)")
+	await typew.edit("`BNI : `0830301026 `A/N Jefanya Efandchris` \nSertakan Bukti Transfer Ya (Wajib) Untuk melanjutkan transaksi \nBot By : [#JefanyaBot](t.me/JejakCheat)")
 
 
 # Create by myself @JejakCheat
@@ -100,7 +100,7 @@ async def typewriter(typew):
 	sleep(2)
 	await typew.edit("`Payment Via OVO YA`")
 	sleep(1)
-	await typew.edit("`OVO :`082247870713 `A/N NI KETUT SUERTI` \nSertakan Bukti Transfer Ya (Wajib) Untuk melanjutkan transaksi \nBot By : [#JefanyaBot](t.me/JejakCheat)")
+	await typew.edit("`OVO : `082247870713 `A/N NI KETUT SUERTI` \nSertakan Bukti Transfer Ya (Wajib) Untuk melanjutkan transaksi \nBot By : [#JefanyaBot](t.me/JejakCheat)")
 
 # Create by myself @JejakCheat
 @register(outgoing=True, pattern='^.danaj(?: |$)(.*)')
@@ -111,7 +111,7 @@ async def typewriter(typew):
 	sleep(2)
 	await typew.edit("`Payment Via DANA YA`")
 	sleep(1)
-	await typew.edit("`DANA :`085320064310 `A/N Sutri nanda` \nSertakan Bukti Transfer Ya (Wajib) Untuk melanjutkan transaksi \nBot By : [#JefanyaBot](t.me/JejakCheat)")
+	await typew.edit("`DANA : `085320064310 `A/N Sutri nanda` \nSertakan Bukti Transfer Ya (Wajib) Untuk melanjutkan transaksi \nBot By : [#JefanyaBot](t.me/JejakCheat)")
 
 # Create by myself @JejakCheat
 @register(outgoing=True, pattern='^.bcaj(?: |$)(.*)')
@@ -122,7 +122,7 @@ async def typewriter(typew):
 	sleep(2)
 	await typew.edit("`Payment Via BCA YA`")
 	sleep(1)
-	await typew.edit("`BCA :`3030634780 `A/N Sutri nanda` \nSertakan Bukti Transfer Ya (Wajib) Untuk melanjutkan transaksi \n[#JefanyaBot](t.me/JejakCheat)")
+	await typew.edit("`BCA : `3030634780 `A/N Sutri nanda` \nSertakan Bukti Transfer Ya (Wajib) Untuk melanjutkan transaksi \n[#JefanyaBot](t.me/JejakCheat)")
 
 
 # Create by myself @JejakCheat
@@ -134,7 +134,7 @@ async def typewriter(typew):
 	sleep(2)
 	await typew.edit("`Payment Via DANA YA`")
 	sleep(1)
-	await typew.edit("`DANA :`082247870713` A/N Jefanya Efandchris` \nSertakan Bukti Transfer Ya (Wajib) Untuk melanjutkan transaksi \nBot By : [#JefanyaBot](t.me/JejakCheat)")
+	await typew.edit("`DANA : `082247870713` A/N Jefanya Efandchris` \nSertakan Bukti Transfer Ya (Wajib) Untuk melanjutkan transaksi \nBot By : [#JefanyaBot](t.me/JejakCheat)")
 
 
 # Create by myself @JejakCheat
