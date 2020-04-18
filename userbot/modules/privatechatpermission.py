@@ -204,7 +204,7 @@ async def disapprovepm(disapprvpm):
 
 
 CMD_HELP.update({
-    "transaksipermit":
+    "pmpermit":
     ">`.trx`"
     "\nFungsi: Untuk Mempersilahkan PM."
     "\n\n>`.untrx`"
