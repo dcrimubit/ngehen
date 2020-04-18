@@ -133,8 +133,29 @@ async def auto_accept(event):
                     )
 
 
-        
-        @register(outgoing=True, pattern="^.trx$")
+@register(outgoing=True, pattern="^.notifoff$")
+async def notifoff(noff_event):
+    """ For .notifoff command, stop getting notifications from unapproved PMs. """
+    try:
+        from userbot.modules.sql_helper.globals import addgvar
+    except AttributeError:
+        return await noff_event.edit("`Running on Non-SQL mode!`")
+    addgvar("NOTIF_OFF", True)
+    await noff_event.edit("`Notifications from unapproved PM's are silenced!`")
+
+
+@register(outgoing=True, pattern="^.notifon$")
+async def notifon(non_event):
+    """ For .notifoff command, get notifications from unapproved PMs. """
+    try:
+        from userbot.modules.sql_helper.globals import delgvar
+    except AttributeError:
+        return await non_event.edit("`Running on Non-SQL mode!`")
+    delgvar("NOTIF_OFF")
+    await non_event.edit("`Notifications from unapproved PM's unmuted!`")
+
+
+@register(outgoing=True, pattern="^.transaksi$")
 async def approvepm(apprvpm):
     """ For .approve command, give someone the permissions to PM you. """
     try:
@@ -157,9 +178,9 @@ async def approvepm(apprvpm):
     try:
         approve(uid)
     except IntegrityError:
-        return await apprvpm.edit("`User ini mungkin sudah di tag dalam transaksi.`")
+        return await apprvpm.edit("`User may already be approved.`")
 
-    await apprvpm.edit(f"[{name0}](tg://user?id={uid}) `Sudah Memulai Transaksi!`")
+    await apprvpm.edit(f"[{name0}](tg://user?id={uid}) `Telah Melakukan Transaksi!`")
 
     async for message in apprvpm.client.iter_messages(apprvpm.chat_id,
                                                       from_user='me',
@@ -169,11 +190,11 @@ async def approvepm(apprvpm):
     if BOTLOG:
         await apprvpm.client.send_message(
             BOTLOG_CHATID,
-            "#SedangTransaksi\n" + "Dengan User: " + f"[{name0}](tg://user?id={uid})",
+            "#SedangTransaksi\nDengan " + "User: " + f"[{name0}](tg://user?id={uid})",
         )
 
 
-@register(outgoing=True, pattern="^.untrx$")
+@register(outgoing=True, pattern="^.rmtrx$")
 async def disapprovepm(disapprvpm):
     try:
         from userbot.modules.sql_helper.pm_permit_sql import dissprove
@@ -192,12 +213,78 @@ async def disapprovepm(disapprvpm):
         name0 = str(aname.first_name)
 
     await disapprvpm.edit(
-        f"[{name0}](tg://user?id={disapprvpm.chat_id}) `Transaksi Selesai!`")
+        f"[{name0}](tg://user?id={disapprvpm.chat_id}) `Transaksi Telah Selesai!`")
 
     if BOTLOG:
         await disapprvpm.client.send_message(
             BOTLOG_CHATID,
-           f"#TransaksiSelesai\n\nDengan [{name0}](tg://user?id={disapprvpm.chat_id})"
-            " Telah Selesai Melakukan Transaksi.",
+            f"#TransaksiSelesai\n\nDengan [{name0}](tg://user?id={disapprvpm.chat_id})"
+            " was disapproved to PM you.",
+        )
+        
+     
+
+@register(outgoing=True, pattern="^.block$")
+async def blockpm(block):
+    """ For .block command, block people from PMing you! """
+    if block.reply_to_msg_id:
+        reply = await block.get_reply_message()
+        replied_user = await block.client.get_entity(reply.from_id)
+        aname = replied_user.id
+        name0 = str(replied_user.first_name)
+        await block.client(BlockRequest(replied_user.id))
+        await block.edit("`You've been blocked!`")
+        uid = replied_user.id
+    else:
+        await block.client(BlockRequest(block.chat_id))
+        aname = await block.client.get_entity(block.chat_id)
+        await block.edit("`You've been blocked!`")
+        name0 = str(aname.first_name)
+        uid = block.chat_id
+
+    try:
+        from userbot.modules.sql_helper.pm_permit_sql import dissprove
+        dissprove(uid)
+    except AttributeError:
+        pass
+
+    if BOTLOG:
+        await block.client.send_message(
+            BOTLOG_CHATID,
+            "#BLOCKED\n" + "User: " + f"[{name0}](tg://user?id={uid})",
         )
 
+
+@register(outgoing=True, pattern="^.unblock$")
+async def unblockpm(unblock):
+    """ For .unblock command, let people PMing you again! """
+    if unblock.reply_to_msg_id:
+        reply = await unblock.get_reply_message()
+        replied_user = await unblock.client.get_entity(reply.from_id)
+        name0 = str(replied_user.first_name)
+        await unblock.client(UnblockRequest(replied_user.id))
+        await unblock.edit("`You have been unblocked.`")
+
+    if BOTLOG:
+        await unblock.client.send_message(
+            BOTLOG_CHATID,
+            f"[{name0}](tg://user?id={replied_user.id})"
+            " was unblocc'd!.",
+        )
+
+
+CMD_HELP.update({
+    "pmpermit":
+    ">`.approve`"
+    "\nUsage: Approves the mentioned/replied person to PM."
+    "\n\n>`.disapprove`"
+    "\nUsage: Disapproves the mentioned/replied person to PM."
+    "\n\n>`.block`"
+    "\nUsage: Blocks the person."
+    "\n\n>`.unblock`"
+    "\nUsage: Unblocks the person so they can PM you."
+    "\n\n>`.notifoff`"
+    "\nUsage: Clears/Disables any notifications of unapproved PMs."
+    "\n\n>`.notifon`"
+    "\nUsage: Allows notifications for unapproved PMs."
+})
