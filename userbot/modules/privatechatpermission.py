@@ -17,9 +17,10 @@ from userbot.events import register
 
 # ========================= CONSTANTS ============================
 UNAPPROVED_MSG = (
-    "`Transaksi dibatalkan.\n\n`"
-    "`Transaksi SKIP.`"
-    "`Silahkan Ke Seller Lain`")
+    "`HeY! This is an automated message.\n\n`"
+    "`I haven't approved you to PM yet.`"
+    "`Please wait for me to look in, I mostly approve PMs.\n\n`"
+    "`Until then, please don't spam my Mastor's PM, you'll get blocked and reported if you do so!`")
 # =================================================================
 
 
@@ -132,8 +133,29 @@ async def auto_accept(event):
                     )
 
 
+@register(outgoing=True, pattern="^.notifoff$")
+async def notifoff(noff_event):
+    """ For .notifoff command, stop getting notifications from unapproved PMs. """
+    try:
+        from userbot.modules.sql_helper.globals import addgvar
+    except AttributeError:
+        return await noff_event.edit("`Running on Non-SQL mode!`")
+    addgvar("NOTIF_OFF", True)
+    await noff_event.edit("`Notifications from unapproved PM's are silenced!`")
 
-@register(outgoing=True, pattern="^.approve$")
+
+@register(outgoing=True, pattern="^.notifon$")
+async def notifon(non_event):
+    """ For .notifoff command, get notifications from unapproved PMs. """
+    try:
+        from userbot.modules.sql_helper.globals import delgvar
+    except AttributeError:
+        return await non_event.edit("`Running on Non-SQL mode!`")
+    delgvar("NOTIF_OFF")
+    await non_event.edit("`Notifications from unapproved PM's unmuted!`")
+
+
+@register(outgoing=True, pattern="^.trx$")
 async def approvepm(apprvpm):
     """ For .approve command, give someone the permissions to PM you. """
     try:
@@ -168,11 +190,11 @@ async def approvepm(apprvpm):
     if BOTLOG:
         await apprvpm.client.send_message(
             BOTLOG_CHATID,
-            "#SEDANG TRANSAKSI\n" + "Dengan User: " + f"[{name0}](tg://user?id={uid})",
+            "#APPROVED\n" + "User: " + f"[{name0}](tg://user?id={uid})",
         )
 
 
-@register(outgoing=True, pattern="^.disapprove$")
+@register(outgoing=True, pattern="^.untrx$")
 async def disapprovepm(disapprvpm):
     try:
         from userbot.modules.sql_helper.pm_permit_sql import dissprove
@@ -201,12 +223,50 @@ async def disapprovepm(disapprvpm):
         )
 
 
+@register(outgoing=True, pattern="^.block$")
+async def blockpm(block):
+    """ For .block command, block people from PMing you! """
+    if block.reply_to_msg_id:
+        reply = await block.get_reply_message()
+        replied_user = await block.client.get_entity(reply.from_id)
+        aname = replied_user.id
+        name0 = str(replied_user.first_name)
+        await block.client(BlockRequest(replied_user.id))
+        await block.edit("`You've been blocked!`")
+        uid = replied_user.id
+    else:
+        await block.client(BlockRequest(block.chat_id))
+        aname = await block.client.get_entity(block.chat_id)
+        await block.edit("`You've been blocked!`")
+        name0 = str(aname.first_name)
+        uid = block.chat_id
+
+    try:
+        from userbot.modules.sql_helper.pm_permit_sql import dissprove
+        dissprove(uid)
+    except AttributeError:
+        pass
+
+    if BOTLOG:
+        await block.client.send_message(
+            BOTLOG_CHATID,
+            "#BLOCKED\n" + "User: " + f"[{name0}](tg://user?id={uid})",
+        )
 
 
-CMD_HELP.update({
-    "pmpermit":
-    ">`.trx`"
-    "\nFungsi: Untuk Mempersilahkan PM."
-    "\n\n>`.untrx`"
-    "\nFungsi: Untuk membatalkan PM."
-})
+@register(outgoing=True, pattern="^.unblock$")
+async def unblockpm(unblock):
+    """ For .unblock command, let people PMing you again! """
+    if unblock.reply_to_msg_id:
+        reply = await unblock.get_reply_message()
+        replied_user = await unblock.client.get_entity(reply.from_id)
+        name0 = str(replied_user.first_name)
+        await unblock.client(UnblockRequest(replied_user.id))
+        await unblock.edit("`You have been unblocked.`")
+
+    if BOTLOG:
+        await unblock.client.send_message(
+            BOTLOG_CHATID,
+            f"[{name0}](tg://user?id={replied_user.id})"
+            " was unblocc'd!.",
+        )
