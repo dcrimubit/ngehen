@@ -1,7 +1,4 @@
-# Copyright (C) 2019 The Raphielscape Company LLC.
-#
-# Licensed under the Raphielscape Public License, Version 1.c (the "License");
-# you may not use this file except in compliance with the License.
+# Copyright (C) 2019 The SenturyPanel Company LLC.
 
 import aria2p
 from asyncio import sleep
@@ -177,24 +174,24 @@ async def check_progress_for_dl(gid, event, previous):
         complete = file.is_complete
         try:
             if not complete and not file.error_message:
-                msg = f"\nDownloading File: `{file.name}`"
-                msg += f"\nSpeed: {file.download_speed_string()}"
-                msg += f"\nProgress: {file.progress_string()}"
-                msg += f"\nTotal Size: {file.total_length_string()}"
-                msg += f"\nStatus: {file.status}"
-                msg += f"\nETA: {file.eta_string()}"
+                msg = f"\nDownloading File Name:\n`{file.name}`\n\n"
+                msg += f"`Status`\n**{file.status.capitalize()}**\n"
+                msg += f"`Speed      :` {file.download_speed_string()}\n"
+                msg += f"`Progress   :` {file.progress_string()}\n"
+                msg += f"`Total Size :` {file.total_length_string()}\n"
+                msg += f"`ETA        :` {file.eta_string()}\n"
                 if msg != previous:
                     await event.edit(msg)
                     msg = previous
             else:
-                LOGS.info(str(file.error_message))
                 await event.edit(f"`{msg}`")
             await sleep(5)
             await check_progress_for_dl(gid, event, previous)
             file = aria2.get_download(gid)
             complete = file.is_complete
             if complete:
-               return await event.edit(f"File Downloaded Successfully: `{file.name}`")
+                return await event.edit(f"`{file.name}`\n\n"
+                                        "Successfully downloaded...")
         except Exception as e:
             if " not found" in str(e) or "'file'" in str(e):
                 await event.edit("Download Canceled :\n`{}`".format(file.name))
