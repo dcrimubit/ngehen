@@ -156,7 +156,7 @@ async def approvepm(apprvpm):
     except IntegrityError:
         return await apprvpm.edit("`User ini mungkin sudah di tag dalam transaksi.`")
 
-    await apprvpm.edit(f"`Starting Bot ...!`\n"
+    await apprvpm.edit(f"`CHANGELOG TRANSAKSI: ...!`\n\n"
                        f"`Sedang Melakukan Transaksi Dengan`[{name0}](tg://user?id={uid})")
 
     async for message in apprvpm.client.iter_messages(apprvpm.chat_id,
@@ -195,6 +195,6 @@ async def disapprovepm(disapprvpm):
     if BOTLOG:
         await disapprvpm.client.send_message(
             BOTLOG_CHATID,
-            f"#TransaksiSelesai\n\nDengan [{name0}](tg://user?id={disapprvpm.chat_id})"
+            f"#TransaksiSelesai\n\n[{name0}](tg://user?id={disapprvpm.chat_id})"
             " Telah Selesai Melakukan Transaksi.",
         )
