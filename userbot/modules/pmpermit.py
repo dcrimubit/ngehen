@@ -221,6 +221,73 @@ async def disapprovepm(disapprvpm):
             f"[{name0}](tg://user?id={disapprvpm.chat_id})"
             " was disapproved to PM you.",
         )
+        
+        @register(outgoing=True, pattern="^.trx$")
+async def approvepm(apprvpm):
+    """ For .approve command, give someone the permissions to PM you. """
+    try:
+        from userbot.modules.sql_helper.pm_permit_sql import approve
+    except AttributeError:
+        return await apprvpm.edit("`Running on Non-SQL mode!`")
+
+    if apprvpm.reply_to_msg_id:
+        reply = await apprvpm.get_reply_message()
+        replied_user = await apprvpm.client.get_entity(reply.from_id)
+        aname = replied_user.id
+        name0 = str(replied_user.first_name)
+        uid = replied_user.id
+
+    else:
+        aname = await apprvpm.client.get_entity(apprvpm.chat_id)
+        name0 = str(aname.first_name)
+        uid = apprvpm.chat_id
+
+    try:
+        approve(uid)
+    except IntegrityError:
+        return await apprvpm.edit("`User ini mungkin sudah di tag dalam transaksi.`")
+
+    await apprvpm.edit(f"[{name0}](tg://user?id={uid}) `Sudah Memulai Transaksi!`")
+
+    async for message in apprvpm.client.iter_messages(apprvpm.chat_id,
+                                                      from_user='me',
+                                                      search=UNAPPROVED_MSG):
+        await message.delete()
+
+    if BOTLOG:
+        await apprvpm.client.send_message(
+            BOTLOG_CHATID,
+            "#SedangTransaksi\n" + "Dengan User: " + f"[{name0}](tg://user?id={uid})",
+        )
+
+
+@register(outgoing=True, pattern="^.untrx$")
+async def disapprovepm(disapprvpm):
+    try:
+        from userbot.modules.sql_helper.pm_permit_sql import dissprove
+    except BaseException:
+        return await disapprvpm.edit("`Running on Non-SQL mode!`")
+
+    if disapprvpm.reply_to_msg_id:
+        reply = await disapprvpm.get_reply_message()
+        replied_user = await disapprvpm.client.get_entity(reply.from_id)
+        aname = replied_user.id
+        name0 = str(replied_user.first_name)
+        dissprove(replied_user.id)
+    else:
+        dissprove(disapprvpm.chat_id)
+        aname = await disapprvpm.client.get_entity(disapprvpm.chat_id)
+        name0 = str(aname.first_name)
+
+    await disapprvpm.edit(
+        f"[{name0}](tg://user?id={disapprvpm.chat_id}) `Transaksi Selesai!`")
+
+    if BOTLOG:
+        await disapprvpm.client.send_message(
+            BOTLOG_CHATID,
+           f"#TransaksiSelesai\n\nDengan [{name0}](tg://user?id={disapprvpm.chat_id})"
+            " Telah Selesai Melakukan Transaksi.",
+        )
 
 
 @register(outgoing=True, pattern="^.block$")
