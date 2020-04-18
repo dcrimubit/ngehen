@@ -41,6 +41,17 @@ async def typewriter(typew):
 	await typew.edit("`Gw udah online`")
 	sleep(1)
 	await typew.edit("`Maaf baru online, ada apa bos?` \n#SenturyBot")
+	
+	# Create by myself @JejakCheat
+@register(outgoing=True, pattern='^.o(?: |$)(.*)')
+async def typewriter(typew):
+	message = typew.pattern_match.group(0)
+	sleep(0)
+	await typew.edit("`Hai Halo Bosku`")
+	sleep(2)
+	await typew.edit("`Gw udah online`")
+	sleep(1)
+	await typew.edit("`Maaf baru online, ada apa bos?` \n#SenturyBot")
 
 
 # Create by myself @JejakCheat
@@ -48,11 +59,11 @@ async def typewriter(typew):
 async def typewriter(typew):
 	message = typew.pattern_match.group(0)
 	sleep(0)
-	await typew.edit("`Hai Halo Bosku`")
+	await typew.edit("`Starting Bot...`")
 	sleep(2)
-	await typew.edit("`Kalau mau Servis Web silahkan kirim OIDnya`")
+	await typew.edit("`Saya Jelaskan Perbedaannya ya `")
 	sleep(1)
-	await typew.edit("`Kirim ORDER ID nya bos kalau mau servis/perpanjang` \nBot By : [#Jefanya](t.me/JejakCheat)")
+	await typew.edit("`Saya jelaskan untuk perbedaan domain dan subdomain .\n\nDomain (pubg.com) *langsung tidak ada tambahan sama sekali\n\nSubdomain ( blablabla.pubg.com ) *ada Tambahan di depan domainnya .\n\nBot By : [#Jefanya](t.me/JejakCheat)")
 
 
 # Create by myself @JejakCheat
