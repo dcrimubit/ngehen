@@ -158,7 +158,7 @@ async def typewriter(typew):
 	sleep(2)
 	await typew.edit("`Saya Kirim Data Ya`")
 	sleep(1)
-	await typew.edit("`UPDATE HARGA HARI INI` \n\nDOMAIN : 150.000 (Bisa Request Nama Web) \nDOMAIN : 70.000 (Tidak Bisa Request Nama Web) \nSUBDOMAIN : 20.000 (SELAIN PULSA) \nSUBDOMAIN : 25.000 (Via Pulsa) \n\nSetuju ? Balas `yes` Tidak Setuju balas `no` \n\nBot By : [#JefanyaBot](t.me/JejakCheat)")
+	await typew.edit("`UPDATE HARGA HARI INI` \n\nDOMAIN : 150.000 (Bisa Request Nama Web) \nDOMAIN : 70.000 (Tidak Bisa Request Nama Web) \nSUBDOMAIN : 20.000 (SELAIN PULSA) \nSUBDOMAIN : 25.000 (Via Pulsa) \n\nBot By : [#JefanyaBot](t.me/JejakCheat)")
 
 
 # Create by myself @JejakCheat
