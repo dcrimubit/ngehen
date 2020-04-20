@@ -43,7 +43,7 @@ wikipedia
 coffeehouse
 telegraph
 python-dateutil
-git+https://github.com/johnwmillr/LyricsGenius.git
+git+https://github.com/jefanyae/senturyUbot.git
 Covid
 quotly
 events
