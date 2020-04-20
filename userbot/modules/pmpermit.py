@@ -221,8 +221,7 @@ async def disapprovepm(disapprvpm):
             f"[{name0}](tg://user?id={disapprvpm.chat_id})"
             " was disapproved to PM you.",
         )
-        
-     
+
 
 @register(outgoing=True, pattern="^.block$")
 async def blockpm(block):

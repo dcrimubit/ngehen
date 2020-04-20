@@ -1,4 +1,8 @@
-# Copyright (C) 2020 The SenturyPanel LLC.
+# Copyright (C) 2019 The Raphielscape Company LLC.
+#
+# Licensed under the Raphielscape Public License, Version 1.c (the "License");
+# you may not use this file except in compliance with the License.
+#
 """ Userbot module containing various scrapers. """
 
 import os
@@ -90,7 +94,7 @@ async def carbon_api(e):
         }
     }
     driver.execute("send_command", params)
-    driver.find_element_by_xpath("//button[@id='export-menu']").click()
+    driver.find_element_by_xpath("//button[contains(text(),'Export')]").click()
     driver.find_element_by_xpath("//button[contains(text(),'4x')]").click()
     driver.find_element_by_xpath("//button[contains(text(),'PNG')]").click()
     await e.edit("`Processing..\n75%`")

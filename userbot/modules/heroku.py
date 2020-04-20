@@ -1,4 +1,4 @@
-# Copyright (C) 2020 SenturyPanel.
+# Copyright (C) 2020 Adek Maulana.
 # All rights reserved.
 """
    Heroku manager for your userbot
@@ -6,18 +6,13 @@
 
 import heroku3
 import asyncio
+import os
 import requests
 import math
 
-from userbot import (
-    CMD_HELP,
-    HEROKU_APP_NAME,
-    HEROKU_API_KEY,
-    BOTLOG,
-    BOTLOG_CHATID
-)
-
+from userbot import CMD_HELP, HEROKU_APP_NAME, HEROKU_API_KEY
 from userbot.events import register
+from userbot.prettyjson import prettyjson
 
 Heroku = heroku3.from_key(HEROKU_API_KEY)
 heroku_api = "https://api.heroku.com"
@@ -33,51 +28,41 @@ async def variable(var):
         app = Heroku.app(HEROKU_APP_NAME)
     else:
         return await var.edit("`[HEROKU]:"
-                              "\nPlease setup your` **HEROKU_APP_NAME**.")
+                              "\nPlease setup your` **HEROKU_APP_NAME**")
     exe = var.pattern_match.group(1)
     heroku_var = app.config()
     if exe == "get":
         await var.edit("`Getting information...`")
+        await asyncio.sleep(1.5)
         try:
             variable = var.pattern_match.group(2).split()[0]
             if variable in heroku_var:
-                if BOTLOG:
-                    await var.client.send_message(
-                        BOTLOG_CHATID, "#CONFIGVAR\n\n"
-                        "**ConfigVar**:\n"
-                        " -> `Config Variable`:\n"
-                        f"     • `{variable}`\n"
-                        " -> `Value`:\n"
-                        f"     • `{heroku_var[variable]}`\n"
-                    )
-                    return await var.edit("`Received information to BOTLOG_CHATID`.")
-                else:
-                    return await var.edit("`Can't get information, set BOTLOG to True`.")
+                return await var.edit("**ConfigVars**:"
+                                      f"\n\n`{variable} = {heroku_var[variable]}`\n")
             else:
-                if BOTLOG:
-                    await var.client.send_message(
-                        BOTLOG_CHATID, "#CONFIGVAR\n\n"
-                        "**ConfigVar**:\n"
-                        " -> `Config Variable`:\n"
-                        f"     • `{variable}`\n"
-                        " -> `Value`:\n"
-                        "     • `ConfigVariable don't exists`\n"
-                    )
-                    return await var.edit("`Empty information...`")
+                return await var.edit("**ConfigVars**:"
+                                      f"\n\n`Error:\n-> {variable} don't exists`")
         except IndexError:
-            configvars = heroku_var.to_dict()
-            msg = ''
-            if BOTLOG:
-                for item in configvars:
-                    msg += f" • `{item}` **=** `{configvars[item]}`\n"
-                await var.client.send_message(
-                    BOTLOG_CHATID, "#CONFIGVARS\n\n"
-                    "**ConfigVars**:\n"
-                    f"{msg}"
-                )
-                return await var.edit("`Received information to BOTLOG_CHATID`.")
-            else:
-                return await var.edit("`Can't get information, set BOTLOG to True`.")
+            configs = prettyjson(heroku_var.to_dict(), indent=2)
+            with open("configs.json", "w") as fp:
+                fp.write(configs)
+            with open("configs.json", "r") as fp:
+                result = fp.read()
+                if len(result) >= 4096:
+                    await var.client.send_file(
+                        var.chat_id,
+                        "configs.json",
+                        reply_to=var.id,
+                        caption="`Output too large, sending it as a file`",
+                    )
+                else:
+                    await var.edit("`[HEROKU]` ConfigVars:\n\n"
+                                   "================================"
+                                   f"\n```{result}```\n"
+                                   "================================"
+                                   )
+            os.remove("configs.json")
+            return
     elif exe == "set":
         await var.edit("`Setting information...`")
         variable = var.pattern_match.group(2)
@@ -90,58 +75,24 @@ async def variable(var):
                 value = var.pattern_match.group(2).split()[1]
             except IndexError:
                 return await var.edit(">`.set var <ConfigVars-name> <value>`")
+        await asyncio.sleep(1.5)
         if variable in heroku_var:
-            if BOTLOG:
-                await var.client.send_message(
-                    BOTLOG_CHATID, "#SETCONFIGVAR\n\n"
-                    "**Set ConfigVar**:\n"
-                    " -> `Config Variable`:\n"
-                    f"     • `{variable}`\n"
-                    " -> `Value`:\n"
-                    f"     • `{value}`\n\n"
-                    "`Successfully changed...`"
-                )
-            await var.edit("`Information sets...`")
+            await var.edit(f"**{variable}**  `successfully changed to`  ->  **{value}**")
         else:
-            if BOTLOG:
-                await var.client.send_message(
-                    BOTLOG_CHATID, "#ADDCONFIGVAR\n\n"
-                    "**Add ConfigVar**:\n"
-                    " -> `Config Variable`:\n"
-                    f"     • `{variable}`\n"
-                    " -> `Value`:\n"
-                    f"     • `{value}`\n\n"
-                    "`Successfully added...`"
-                )
-            await var.edit("`Information added...`")
+            await var.edit(f"**{variable}**  `successfully added with value`  ->  **{value}**")
         heroku_var[variable] = value
     elif exe == "del":
-        await var.edit("`Getting and setting information...`")
+        await var.edit("`Getting information to deleting variable...`")
         try:
             variable = var.pattern_match.group(2).split()[0]
         except IndexError:
-            return await var.edit("`Please specify ConfigVars you want to delete`.")
+            return await var.edit("`Please specify ConfigVars you want to delete`")
+        await asyncio.sleep(1.5)
         if variable in heroku_var:
-            if BOTLOG:
-                await var.client.send_message(
-                    BOTLOG_CHATID, "#DELCONFIGVAR\n\n"
-                    "**Delete ConfigVar**:\n"
-                    " -> `Config Variable`:\n"
-                    f"     • `{variable}`\n\n"
-                    "`Successfully deleted...`"
-                )
-            await var.edit("`Information deleted...`")
+            await var.edit(f"**{variable}**  `successfully deleted`")
             del heroku_var[variable]
         else:
-            await var.edit(f"`Can't get information...`")
-            rsp = await var.respond(
-                "**Delete ConfigVar**:\n"
-                " -> `Config Variable`:\n"
-                f"     • `{variable}`\n\n"
-                "`Is not exists...`"
-                )
-            await asyncio.sleep(3.5)
-            await var.client.delete_messages(var.chat_id, rsp.id)
+            return await var.edit(f"**{variable}**  `is not exists`")
 
 
 @register(outgoing=True, pattern=r"^.usage(?: |$)")
@@ -149,7 +100,7 @@ async def dyno_usage(dyno):
     """
         Get your account Dyno Usage
     """
-    await dyno.edit("`Getting Information...`")
+    await dyno.edit("`Processing...`")
     useragent = ('Mozilla/5.0 (Linux; Android 10; SM-G975F) '
                  'AppleWebKit/537.36 (KHTML, like Gecko) '
                  'Chrome/80.0.3987.149 Mobile Safari/537.36'
@@ -188,6 +139,8 @@ async def dyno_usage(dyno):
         AppPercentage = math.floor(App[0]['quota_used'] * 100 / quota)
     AppHours = math.floor(AppQuotaUsed / 60)
     AppMinutes = math.floor(AppQuotaUsed % 60)
+
+    await asyncio.sleep(1.5)
 
     return await dyno.edit("**Dyno Usage**:\n\n"
                            f" -> `Dyno usage for`  **{HEROKU_APP_NAME}**:\n"

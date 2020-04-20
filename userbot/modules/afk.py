@@ -53,9 +53,8 @@ async def mention_afk(mention):
         if ISAFK:
             if mention.sender_id not in USERS:
                 if AFKREASON:
-                    await mention.reply(""
-                                        f"`{AFKREASON}`"
-                                       "\nBot By : #SenturyBot")
+                    await mention.reply("I'm AFK right now."
+                                        f"\nBecause I'm `{AFKREASON}`")
                 else:
                     await mention.reply(str(choice(AFKSTR)))
                 USERS.update({mention.sender_id: 1})
@@ -63,10 +62,8 @@ async def mention_afk(mention):
             elif mention.sender_id in USERS:
                 if USERS[mention.sender_id] % randint(2, 4) == 0:
                     if AFKREASON:
-                        await mention.reply(""
-                                            f"`{AFKREASON}`\n"
-                                            "\nBot By : #SenturyBot")
-                                            
+                        await mention.reply("I'm still AFK."
+                                            f"\nReason: `{AFKREASON}`")
                     else:
                         await mention.reply(str(choice(AFKSTR)))
                     USERS[mention.sender_id] = USERS[mention.sender_id] + 1
@@ -95,9 +92,8 @@ async def afk_on_pm(sender):
         if apprv and ISAFK:
             if sender.sender_id not in USERS:
                 if AFKREASON:
-                    await sender.reply(""
-                                       f"`{AFKREASON}`"
-                                       f"\nBot By : #SenturyBot")
+                    await sender.reply("I'm AFK right now."
+                                       f"\nReason: `{AFKREASON}`")
                 else:
                     await sender.reply(str(choice(AFKSTR)))
                 USERS.update({sender.sender_id: 1})
@@ -105,9 +101,8 @@ async def afk_on_pm(sender):
             elif apprv and sender.sender_id in USERS:
                 if USERS[sender.sender_id] % randint(2, 4) == 0:
                     if AFKREASON:
-                        await sender.reply(""
-                                           f"`{AFKREASON}`"
-                                          f"\nBot By : #SenturyBot")
+                        await sender.reply("I'm still AFK."
+                                           f"\nReason: `{AFKREASON}`")
                     else:
                         await sender.reply(str(choice(AFKSTR)))
                     USERS[sender.sender_id] = USERS[sender.sender_id] + 1
@@ -127,11 +122,11 @@ async def set_afk(afk_e):
     if string:
         AFKREASON = string
         await afk_e.edit("Going AFK!"
-                         f"\nAlasan: `{string}`")
+                         f"\nReason: `{string}`")
     else:
-        await afk_e.edit("Pergi AFK!")
+        await afk_e.edit("Going AFK!")
     if BOTLOG:
-        await afk_e.client.send_message(BOTLOG_CHATID, "#AFK\nKamu Sekarang AFK")
+        await afk_e.client.send_message(BOTLOG_CHATID, "#AFK\nYou went AFK!")
     ISAFK = True
     raise StopPropagation
 
@@ -145,7 +140,7 @@ async def type_afk_is_not_true(notafk):
     global AFKREASON
     if ISAFK:
         ISAFK = False
-        msg = await notafk.respond("Aku Online Kembali.\nBot By : #SenturyBot")
+        msg = await notafk.respond("I'm no longer AFK.")
         await sleep(2)
         await msg.delete()
         if BOTLOG:
@@ -170,7 +165,7 @@ async def type_afk_is_not_true(notafk):
 CMD_HELP.update({
     "afk":
     ">`.afk [Optional Reason]`"
-    "\nUsage: Aktifkan fitur afk.\nMaka otomatis akan menjawab semua orang yang sedang menyapa kamu di chat saat AFK "
-    "kamu memberitahu mereka kalau kamu sedang AFK (reason)."
-    "\n\nKirim pesan apapun untuk kembali dari AFK."
+    "\nUsage: Sets you as afk.\nReplies to anyone who tags/PM's "
+    "you telling them that you are AFK(reason)."
+    "\n\nSwitches off AFK when you type back anything, anywhere."
 })

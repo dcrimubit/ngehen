@@ -43,8 +43,4 @@ wikipedia
 coffeehouse
 telegraph
 python-dateutil
-git+https://github.com/jefanyae/senturyUbot.git
-Covid
-quotly
-events
-spotify_token
+git+https://github.com/johnwmillr/LyricsGenius.git

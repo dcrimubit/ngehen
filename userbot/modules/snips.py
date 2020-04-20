@@ -1,4 +1,7 @@
-# Copyright (C) 2020 The Sentury Panel Company LLC.
+# Copyright (C) 2019 The Raphielscape Company LLC.
+#
+# Licensed under the Raphielscape Public License, Version 1.c (the "License");
+# you may not use this file except in compliance with the License.
 """ Userbot module containing commands for keeping global notes. """
 
 from userbot.events import register
@@ -33,7 +36,7 @@ async def on_snip(event):
                                         reply_to=message_id_to_reply)
 
 
-@register(outgoing=True, pattern=r"^.save (\w*)")
+@register(outgoing=True, pattern=r"^.snip (\w*)")
 async def on_snip_save(event):
     """ For .snip command, saves snips for future use. """
     try:
@@ -71,7 +74,7 @@ async def on_snip_save(event):
         await event.edit(success.format('saved', keyword))
 
 
-@register(outgoing=True, pattern="^.load$")
+@register(outgoing=True, pattern="^.snips$")
 async def on_snip_list(event):
     """ For .snips command, lists snips saved by you. """
     try:
@@ -91,7 +94,7 @@ async def on_snip_list(event):
     await event.edit(message)
 
 
-@register(outgoing=True, pattern=r"^.rmsave (\w*)")
+@register(outgoing=True, pattern=r"^.remsnip (\w*)")
 async def on_snip_delete(event):
     """ For .remsnip command, deletes a snip. """
     try:
@@ -107,13 +110,13 @@ async def on_snip_delete(event):
 
 CMD_HELP.update({
     "snips":
-    ">`$<save_name>`"
+    ">`$<snip_name>`"
     "\nUsage: Gets the specified snip, anywhere."
-    "\n\n>`.save <name> <data> or reply to a message with .save <name>`"
+    "\n\n>`.snip <name> <data> or reply to a message with .snip <name>`"
     "\nUsage: Saves the message as a snip (global note) with the name."
     " (Works with pics, docs, and stickers too!)"
-    "\n\n>`.load`"
-    "\nUsage: Gets all saved global note."
-    "\n\n>`.rmsave <snip_name>`"
+    "\n\n>`.snips`"
+    "\nUsage: Gets all saved snips."
+    "\n\n>`.remsnip <snip_name>`"
     "\nUsage: Deletes the specified snip."
 })

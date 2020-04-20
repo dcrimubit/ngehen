@@ -1,4 +1,11 @@
-# Pembuat Bot : t.me/JejakCheat
+# Copyright (C) 2019 The Raphielscape Company LLC.
+#
+# Licensed under the Raphielscape Public License, Version 1.c (the "License");
+# you may not use this file except in compliance with the License.
+#
+# The entire source code is OSSRPL except
+# 'download, uploadir, uploadas, upload' which is MPL
+# License: MPL and OSSRPL
 """ Userbot module which contains everything related to
      downloading/uploading from/to the server. """
 
@@ -61,25 +68,25 @@ def humanbytes(size):
     return str(round(size, 2)) + " " + dict_power_n[raised_to_pow] + "B"
 
 
-def time_formatter(seconds: int) -> str:
+def time_formatter(milliseconds: int) -> str:
     """Inputs time in milliseconds, to get beautified time,
     as string"""
-    #UPDATE 18/04/2020
+    seconds, milliseconds = divmod(int(milliseconds), 1000)
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
     tmp = ((str(days) + " day(s), ") if days else "") + \
         ((str(hours) + " hour(s), ") if hours else "") + \
         ((str(minutes) + " minute(s), ") if minutes else "") + \
-        ((str(seconds) + " second(s), ") if seconds else "")
-     #UPDATE
+        ((str(seconds) + " second(s), ") if seconds else "") + \
+        ((str(milliseconds) + " millisecond(s), ") if milliseconds else "")
     return tmp[:-2]
 
 
 @register(pattern=r".download(?: |$)(.*)", outgoing=True)
 async def download(target_file):
     """ For .download command, download files to the userbot's server. """
-    await target_file.edit("Sedang di proses ...")
+    await target_file.edit("Processing ...")
     input_str = target_file.pattern_match.group(1)
     if not os.path.isdir(TEMP_DOWNLOAD_DIRECTORY):
         os.makedirs(TEMP_DOWNLOAD_DIRECTORY)
@@ -115,13 +122,13 @@ async def download(target_file):
             try:
                 current_message = (
                     f"URL: {url}\n"
-                    "Nama File:"
+                    "File Name:"
                     f"\n`{file_name}`\n\n"
                     "Status:"
                     f"\n**{status}** | {progress_str} `{percentage}%`"
                     f"\n{humanbytes(downloaded)} of {humanbytes(total_length)}"
                     f" @ {speed}"
-                    f"\nWaktu Yang dibutuhkan: {estimated_total_time}"
+                    f"\nETA: {estimated_total_time}"
                 )
 
                 if round(diff %
@@ -131,10 +138,10 @@ async def download(target_file):
             except Exception as e:
                 LOGS.info(str(e))
         if downloader.isSuccessful():
-            await target_file.edit("Download `{}` Telah Sukses !!".format(
+            await target_file.edit("Downloaded to `{}` successfully !!".format(
                 downloaded_file_name))
         else:
-            await target_file.edit("URL salah\n{}".format(url))
+            await target_file.edit("Incorrect URL\n{}".format(url))
     elif target_file.reply_to_msg_id:
         try:
             c_time = time.time()
@@ -143,15 +150,15 @@ async def download(target_file):
                 TEMP_DOWNLOAD_DIRECTORY,
                 progress_callback=lambda d, t: asyncio.get_event_loop(
                 ).create_task(
-                    progress(d, t, target_file, c_time, "Sedang ...")))
+                    progress(d, t, target_file, c_time, "Downloading...")))
         except Exception as e:  # pylint:disable=C0103,W0703
             await target_file.edit(str(e))
         else:
-            await target_file.edit("Download ke `{}` Telah sukses !!".format(
+            await target_file.edit("Downloaded to `{}` successfully !!".format(
                 downloaded_file_name))
     else:
         await target_file.edit(
-            "Membalas pesan untuk diunduh ke server lokal saya.")
+            "Reply to a message to download to my local server.")
 
 
 @register(pattern=r".uploadir (.*)", outgoing=True)
@@ -159,7 +166,7 @@ async def uploadir(udir_event):
     """ For .uploadir command, allows you to upload everything from a folder in the server"""
     input_str = udir_event.pattern_match.group(1)
     if os.path.exists(input_str):
-        await udir_event.edit("Sedang di proses ...")
+        await udir_event.edit("Processing ...")
         lst_of_files = []
         for r, d, f in os.walk(input_str):
             for file in f:
@@ -169,7 +176,7 @@ async def uploadir(udir_event):
         LOGS.info(lst_of_files)
         uploaded = 0
         await udir_event.edit(
-            "Ditemukan {} file. Pengunggahan akan segera dimulai. Mohon tunggu!".format(
+            "Found {} files. Uploading will start soon. Please wait!".format(
                 len(lst_of_files)))
         for single_file in lst_of_files:
             if os.path.exists(single_file):
@@ -186,7 +193,7 @@ async def uploadir(udir_event):
                         reply_to=udir_event.message.id,
                         progress_callback=lambda d, t: asyncio.get_event_loop(
                         ).create_task(
-                            progress(d, t, udir_event, c_time, "Sedang mengunggah...",
+                            progress(d, t, udir_event, c_time, "Uploading...",
                                      single_file)))
                 else:
                     thumb_image = os.path.join(input_str, "thumb.jpg")
@@ -220,12 +227,12 @@ async def uploadir(udir_event):
                         ],
                         progress_callback=lambda d, t: asyncio.get_event_loop(
                         ).create_task(
-                            progress(d, t, udir_event, c_time, "Sedang mengunggah...",
+                            progress(d, t, udir_event, c_time, "Uploading...",
                                      single_file)))
                 os.remove(single_file)
                 uploaded = uploaded + 1
         await udir_event.edit(
-            " {} berkas sukses !!".format(uploaded))
+            "Uploaded {} files successfully !!".format(uploaded))
     else:
         await udir_event.edit("404: Directory Not Found")
 
@@ -236,7 +243,7 @@ async def upload(u_event):
     await u_event.edit("Processing ...")
     input_str = u_event.pattern_match.group(1)
     if input_str in ("userbot.session", "config.env"):
-        return await u_event.edit("`Itu operasi yang berbahaya! Tidak diperbolehkan!`")
+        return await u_event.edit("`That's a dangerous operation! Not Permitted!`")
     if os.path.exists(input_str):
         c_time = time.time()
         await u_event.client.send_file(
@@ -247,8 +254,8 @@ async def upload(u_event):
             reply_to=u_event.message.id,
             progress_callback=lambda d, t: asyncio.get_event_loop(
             ).create_task(
-                progress(d, t, u_event, c_time, "Sedang mengunggah...", input_str)))
-        await u_event.edit("Sukses mengunggah !!")
+                progress(d, t, u_event, c_time, "Uploading...", input_str)))
+        await u_event.edit("Uploaded successfully !!")
     else:
         await u_event.edit("404: File Not Found")
 
@@ -364,7 +371,7 @@ async def uploadas(uas_event):
                     ],
                     progress_callback=lambda d, t: asyncio.get_event_loop(
                     ).create_task(
-                        progress(d, t, uas_event, c_time, "Sedang mengunggah...",
+                        progress(d, t, uas_event, c_time, "Uploading...",
                                  file_name)))
             elif round_message:
                 c_time = time.time()
@@ -386,12 +393,12 @@ async def uploadas(uas_event):
                     ],
                     progress_callback=lambda d, t: asyncio.get_event_loop(
                     ).create_task(
-                        progress(d, t, uas_event, c_time, "Sedang mengunggah...",
+                        progress(d, t, uas_event, c_time, "Uploading...",
                                  file_name)))
             elif spam_big_messages:
                 return await uas_event.edit("TBD: Not (yet) Implemented")
             os.remove(thumb)
-            await uas_event.edit("Berhasil mengunggah !!")
+            await uas_event.edit("Uploaded successfully !!")
         except FileNotFoundError as err:
             await uas_event.edit(str(err))
     else:
@@ -400,10 +407,8 @@ async def uploadas(uas_event):
 
 CMD_HELP.update({
     "download":
-    ">`.download <link|namafile> atau balas media`\n"
-    "Fungsi: File unduhan ke server.\n\n"
-    ">`.upload <jalan di server>`\n"
-    "Fungsi: Unggah file yang disimpan secara lokal ke obrolan.\n\n"
-    "Bot By : [Jefanya Efandchris](t.me/JejakCheat)\n"
-     "Code Github : [Klik Disini](https://github.com/jefa2231/Auto)"
+    ">`.download <link|filename> or reply to media`"
+    "\nUsage: Downloads file to the server."
+    "\n\n>`.upload <path in server>`"
+    "\nUsage: Uploads a locally stored file to the chat."
 })

@@ -83,9 +83,8 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
         except GitCommandError as error:
             await event.edit(f'{txt}\n`Here is the error log:\n{error}`')
             return repo.__del__()
-        await event.edit('`Pembaruan selesai!\n'
-                         'Sedang memulai ulang bot, Tunggu Sebentar.........\n`'
-                         'Bot By : [Jefanya Efandchris](t.me/Jejakcheat)')
+        await event.edit('`Successfully Updated!\n'
+                         'Restarting, please wait...`')
     else:
         await event.edit('`[HEROKU]:'
                          '\nPlease set up` **HEROKU_API_KEY** `variable.`'
@@ -100,7 +99,7 @@ async def update(event, repo, ups_rem, ac_br):
         repo.git.reset("--hard", "FETCH_HEAD")
     await update_requirements()
     await event.edit('`Successfully Updated!\n'
-                     'Bot is restarting... Wait for a second!` \nBot By : [Jefanya Efandchris](t.me/JejakCheat)')
+                     'Bot is restarting... Wait for a second!`')
     # Spin a new instance of bot
     args = [sys.executable, "-m", "userbot"]
     execle(sys.executable, *args, environ)
@@ -110,7 +109,7 @@ async def update(event, repo, ups_rem, ac_br):
 @register(outgoing=True, pattern=r"^.update(?: |$)(now|deploy)?")
 async def upstream(event):
     "For .update command, check if the bot is up to date, update if specified"
-    await event.edit("`Sedang mencari pembaruan, tunggu sebentar....\n`Bot By[Jefanya Efandchris](t.me/JejakCheat)")
+    await event.edit("`Checking for updates, please wait....`")
     conf = event.pattern_match.group(1)
     off_repo = UPSTREAM_REPO_URL
     force_update = False
@@ -159,13 +158,13 @@ async def upstream(event):
 
     if changelog == '' and force_update is False:
         await event.edit(
-            f'\n`Bot Kamu sudah yang`  **Terbaru**  `dengan menggunakan`  **{UPSTREAM_REPO_BRANCH}**\n')
+            f'\n`Your USERBOT is`  **up-to-date**  `with`  **{UPSTREAM_REPO_BRANCH}**\n')
         return repo.__del__()
 
     if conf is None and force_update is False:
-        changelog_str = f'**Data Update Ditemukan [{ac_br}]:\n\nLIST UPDATE:**\n`{changelog}`'
+        changelog_str = f'**New UPDATE available for [{ac_br}]:\n\nCHANGELOG:**\n`{changelog}`'
         if len(changelog_str) > 4096:
-            await event.edit("`Changelog terlalu besar, maka saya akan mengirim lognya dengan file.`")
+            await event.edit("`Changelog is too big, view the file to see it.`")
             file = open("output.txt", "w+")
             file.write(changelog_str)
             file.close()
@@ -177,13 +176,13 @@ async def upstream(event):
             remove("output.txt")
         else:
             await event.edit(changelog_str)
-        return await event.respond('`ketik ".update now/deploy" untuk update`')
+        return await event.respond('`do ".update now/deploy" to update`')
 
     if force_update:
         await event.edit(
-            '`Menyinkronkan paksa ke kode userbot stabil terbaru, harap tunggu...`')
+            '`Force-Syncing to latest stable userbot code, please wait...`')
     else:
-        await event.edit('`Meng-update userbot, tunggu sebentar....`')
+        await event.edit('`Updating userbot, please wait....`')
     if conf == "now":
         await update(event, repo, ups_rem, ac_br)
     elif conf == "deploy":

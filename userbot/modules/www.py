@@ -17,7 +17,7 @@ from userbot.events import register
 @register(outgoing=True, pattern="^.speed$")
 async def speedtst(spd):
     """ For .speed command, use SpeedTest to check server speeds. """
-    await spd.edit("`Menjalankan uji kecepatan . . .`\nBot By : [#SenturyBot](t.me/JejakCheat)")
+    await spd.edit("`Running speed test . . .`")
     test = Speedtest()
 
     test.get_best_server()
@@ -42,7 +42,7 @@ async def speedtst(spd):
 
 def speed_convert(size):
     """
-    Hi kamu, tidak melihat adanya kecepatan?
+    Hi human, you can't read bytes?
     """
     power = 2**10
     zero = 0
@@ -75,11 +75,11 @@ async def pingme(pong):
 CMD_HELP.update({
      "speed":
      ">`.speed`"
-     "\nFungsi: Untuk melihat kecepatan internet kita.",
+     "\nUsage: Does a speedtest and shows the results.",
      "dc":
      ">`.dc`"
-     "\nFungsi: Untuk Melihat data center .",
+     "\nUsage: Finds the nearest datacenter from your server.",
      "ping":
      ">`.ping`"
-     "\nFungsi: Untuk melihat kecepatan membalas ."
+     "\nUsage: Shows how long it takes to ping your bot."
 })
